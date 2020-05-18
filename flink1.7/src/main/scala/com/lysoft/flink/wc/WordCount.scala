@@ -9,7 +9,7 @@ object WordCount {
     val env = ExecutionEnvironment.getExecutionEnvironment
 
     //从文本读取数据
-    val inputPath: String = "D:\\ideaworkspace\\study\\bigdata\\flink1.7\\src\\main\\resources\\wc.txt"
+    val inputPath: String = getClass.getResource("/wc.txt").getPath
     val inputDataSet: DataSet[String] = env.readTextFile(inputPath)
 
     //分词之后，对单词进行groupBy分组，然后使用sum聚合
