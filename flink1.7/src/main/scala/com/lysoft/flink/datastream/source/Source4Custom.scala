@@ -1,6 +1,7 @@
 package com.lysoft.flink.datastream.source
 
-import org.apache.flink.streaming.api.functions.source.SourceFunction
+import org.apache.flink.configuration.Configuration
+import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 import org.apache.flink.streaming.api.scala._
 
 import scala.util.Random
@@ -25,16 +26,20 @@ object Source4Custom {
 /**
  * 自定义Source
  */
-class MySensorSource extends SourceFunction[SensorReading] {
+class MySensorSource extends RichSourceFunction[SensorReading] {
 
   //表示是否产生数据
-  var isRunning: Boolean = true;
+  var isRunning: Boolean = _
+  var random: Random = _
+  var curTemp: IndexedSeq[SensorReading] = _
+
+  override def open(parameters: Configuration): Unit = {
+    random = new Random
+    isRunning = true
+    curTemp = 1.to(10).map(i => SensorReading("sensor_" + i, System.currentTimeMillis(), 65 + random.nextGaussian() * 20))
+  }
 
   override def run(ctx: SourceFunction.SourceContext[SensorReading]): Unit = {
-    val random: Random = new Random()
-
-    val curTemp = 1.to(10).map(i => SensorReading("sensor_" + i, System.currentTimeMillis(), 65 + random.nextGaussian() * 20))
-
     while (isRunning) {
       curTemp.foreach(sensor => ctx.collect(SensorReading(sensor.id, System.currentTimeMillis(), sensor.temperature + random.nextGaussian())))
       Thread.sleep(500)
