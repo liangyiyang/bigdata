@@ -40,8 +40,12 @@ object TumblingWindowTest {
   def main(args: Array[String]): Unit = {
     //创建执行环境
     val env = StreamExecutionEnvironment.getExecutionEnvironment
+
     //设置全局并行度
     env.setParallelism(1)
+
+    //设置周期性生成wartermark的间隔时间
+    env.getConfig.setAutoWatermarkInterval(200)
 
     //设置时间语义
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)

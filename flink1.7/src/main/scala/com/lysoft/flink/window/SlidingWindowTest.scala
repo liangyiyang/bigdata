@@ -2,8 +2,10 @@ package com.lysoft.flink.window
 
 import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.streaming.api.TimeCharacteristic
+import org.apache.flink.streaming.api.functions.{AssignerWithPeriodicWatermarks, AssignerWithPunctuatedWatermarks, TimestampAssigner}
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.watermark.Watermark
 import org.apache.flink.streaming.api.windowing.time.Time
 
 /**
@@ -51,8 +53,12 @@ object SlidingWindowTest {
   def main(args: Array[String]): Unit = {
     //创建执行环境
     val env = StreamExecutionEnvironment.getExecutionEnvironment
+
     //设置全局并行度
     env.setParallelism(1)
+
+    //设置周期性生成wartermark的间隔时间
+    env.getConfig.setAutoWatermarkInterval(200)
 
     //设置时间语义
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
@@ -64,7 +70,10 @@ object SlidingWindowTest {
     val dataStream = stream.map(data => {
       val dataArray: Array[String] = data.split(",")
       SensorReading(dataArray(0).trim, dataArray(1).trim.toLong, dataArray(2).trim.toDouble)
-    }).assignTimestampsAndWatermarks(
+    })
+      //.assignTimestampsAndWatermarks(new CustomPeriodicAssigner(1000))
+      //.assignAscendingTimestamps(_.timestamp * 1000L)
+      .assignTimestampsAndWatermarks(
       //延迟1秒
       new BoundedOutOfOrdernessTimestampExtractor[SensorReading](Time.seconds(1)) {
         override def extractTimestamp(t: SensorReading): Long = {
@@ -88,6 +97,45 @@ object SlidingWindowTest {
     dataStream.print("input data")
 
     env.execute("window test")
+  }
+
+}
+
+/**
+ * 自定义周期性生成wartermark
+ */
+class CustomPeriodicAssigner(inteval: Long) extends AssignerWithPeriodicWatermarks[SensorReading] {
+  //wartermark当前最大时间戳
+  var currentMaxTimestamp: Long = Long.MinValue
+
+  override def getCurrentWatermark: Watermark = {
+    //生成wartermark减去延迟的时间，表示该数据的EventTime < 该值的话，说明EventTime之前的数据已经被收集了。
+    new Watermark(currentMaxTimestamp - inteval)
+  }
+
+  override def extractTimestamp(t: SensorReading, l: Long): Long = {
+    //保证wartermark单调递增，只涨不跌
+    currentMaxTimestamp = currentMaxTimestamp.max(t.timestamp * 1000L)
+    t.timestamp * 1000L
+  }
+
+}
+
+/**
+ * 自定义根据数据条件来生成wartermark
+ */
+class CustomPunctuatedAssigner(inteval: Long) extends AssignerWithPunctuatedWatermarks[SensorReading] {
+
+  override def checkAndGetNextWatermark(lastElement: SensorReading, extractedTimestamp: Long): Watermark = {
+    if (lastElement.id == "sensor_1") {
+      new Watermark(extractedTimestamp - inteval)
+    } else {
+      null
+    }
+  }
+
+  override def extractTimestamp(element: SensorReading, previousElementTimestamp: Long): Long = {
+    element.timestamp * 1000L
   }
 
 }
