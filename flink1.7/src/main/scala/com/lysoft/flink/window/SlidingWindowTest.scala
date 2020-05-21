@@ -72,6 +72,7 @@ object SlidingWindowTest {
       SensorReading(dataArray(0).trim, dataArray(1).trim.toLong, dataArray(2).trim.toDouble)
     })
       //.assignTimestampsAndWatermarks(new CustomPeriodicAssigner(1000))
+      //.assignTimestampsAndWatermarks(new CustomPunctuatedAssigner(1000))
       //.assignAscendingTimestamps(_.timestamp * 1000L)
       .assignTimestampsAndWatermarks(
       //延迟1秒

@@ -36,11 +36,13 @@ class MySensorSource extends RichSourceFunction[SensorReading] {
   override def open(parameters: Configuration): Unit = {
     random = new Random
     isRunning = true
+    //初始化10个传感器测试数据
     curTemp = 1.to(10).map(i => SensorReading("sensor_" + i, System.currentTimeMillis(), 65 + random.nextGaussian() * 20))
   }
 
   override def run(ctx: SourceFunction.SourceContext[SensorReading]): Unit = {
     while (isRunning) {
+      //更新传感器数据
       curTemp.foreach(sensor => ctx.collect(SensorReading(sensor.id, System.currentTimeMillis(), sensor.temperature + random.nextGaussian())))
       Thread.sleep(500)
     }

@@ -4,7 +4,7 @@ import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 
 /**
- * 根据某个条件，将一个流切分成2个流，分别对流数据进行不同的处理
+ * 根据某个条件，将一个流切分成多个流，分别对数据流进行不同的处理
  */
 object Transform4SplitSelect {
 

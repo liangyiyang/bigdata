@@ -39,7 +39,7 @@ class TempIncrementAlert extends KeyedProcessFunction[String, SensorReading, Str
   lazy val lastTemp: ValueState[Double] = getRuntimeContext.getState(new ValueStateDescriptor[Double]("lastTemp", classOf[Double]))
 
   //上一次注册定时器的时间
-  lazy val currentTimer: ValueState[Long] = getRuntimeContext.getState(new ValueStateDescriptor[Long]("currentTimer", classOf[Long]))
+  lazy val lastRegisterTime: ValueState[Long] = getRuntimeContext.getState(new ValueStateDescriptor[Long]("lastRegisterTime", classOf[Long]))
 
   override def processElement(value: SensorReading, ctx: KeyedProcessFunction[String, SensorReading, String]#Context, out: Collector[String]): Unit = {
     //传感器上一次的温度值
@@ -47,22 +47,22 @@ class TempIncrementAlert extends KeyedProcessFunction[String, SensorReading, Str
     //更新传感器的温度值
     lastTemp.update(value.temperature)
     //上一次注册的定时器
-    val lastTimer: Long = currentTimer.value()
+    val lastTimer: Long = lastRegisterTime.value()
 
     if (value.temperature > preTemp && lastTimer == 0) {
-      val timerTs: Long = ctx.timerService().currentProcessingTime() + 5000L
+      val timerTs: Long = ctx.timerService().currentProcessingTime() + 1000L
       ctx.timerService().registerProcessingTimeTimer(timerTs)
-      currentTimer.update(timerTs)
+      lastRegisterTime.update(timerTs)
     } else if (preTemp > value.temperature || preTemp == 0.0) {
       ctx.timerService().deleteProcessingTimeTimer(lastTimer)
-      currentTimer.clear()
+      lastRegisterTime.clear()
     }
 
   }
 
   override def onTimer(timestamp: Long, ctx: KeyedProcessFunction[String, SensorReading, String]#OnTimerContext, out: Collector[String]): Unit = {
     out.collect(ctx.getCurrentKey + "传感器1秒内温度连续上升.")
-    currentTimer.clear()
+    lastRegisterTime.clear()
   }
 
 }
