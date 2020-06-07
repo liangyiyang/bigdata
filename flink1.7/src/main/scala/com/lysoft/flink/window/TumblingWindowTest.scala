@@ -16,7 +16,7 @@ import org.apache.flink.streaming.api.windowing.time.Time
  * 计算窗口起始和结束时间为：
  * 1、当前输入记录事件时间为1547718201，程序设置数据延迟一秒到达，wartermark水位认为1547718200之前的数据已经到达，10秒一个窗口，
  * 所以计算出窗口的起始时间为1547718190、结束时间为1547718200，下一个窗口为1547718200 ~ 1547718210，因为延迟一秒，输入1547718211才会关闭窗口。
- * 2、窗口数据是左闭右开原则，即包含开始时间，不含结算时间的数据。
+ * 2、窗口数据是左闭右开原则，即包含开始时间，不含结束时间的数据。
  *
  *
  * 第二个窗口输入数据：
@@ -70,7 +70,7 @@ object TumblingWindowTest {
     val minTempPerWindowStream = dataStream
       .map(data => (data.id, data.temperature))
       .keyBy(_._1)
-      //窗口数据是左闭右开原则，即包含开始时间，不含结算时间的数据
+      //窗口数据是左闭右开原则，即包含开始时间，不含结束时间的数据
       .timeWindow(Time.seconds(10))
       .reduce( (data1, data2) => {
         (data1._1, data1._2.min(data2._2))

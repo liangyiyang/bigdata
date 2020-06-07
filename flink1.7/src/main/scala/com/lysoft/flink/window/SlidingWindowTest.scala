@@ -19,7 +19,7 @@ import org.apache.flink.streaming.api.windowing.time.Time
  * 计算窗口起始和结束时间为：
  * 1、当前输入记录事件时间为1547718201，程序设置数据延迟一秒到达，wartermark水位认为1547718200之前的数据已经到达，15秒一个窗口，每次滑动5秒
  * 所以计算出窗口的起始时间为1547718185、结束时间为1547718200，下一个窗口为1547718190 ~ 1547718205，每5秒统计一次结果，因为延迟一秒，输入1547718206才会输出计算结果。
- * 2、窗口数据是左闭右开原则，即包含开始时间，不含结算时间的数据。
+ * 2、窗口数据是左闭右开原则，即包含开始时间，不含结束时间的数据。
  *
  *
  * 第二个窗口输入数据：
@@ -87,7 +87,7 @@ object SlidingWindowTest {
     val minTempPerWindowStream = dataStream
       .map(data => (data.id, data.temperature))
       .keyBy(_._1)
-      //窗口数据是左闭右开原则，即包含开始时间，不含结算时间的数据
+      //窗口数据是左闭右开原则，即包含开始时间，不含结束时间的数据
       //.window(new SlidingEventTimeWindows(Time.seconds(15), Time.seconds(5), Time.hours(-8)))
       .timeWindow(Time.seconds(15), Time.seconds(5))
       .reduce( (data1, data2) => {
