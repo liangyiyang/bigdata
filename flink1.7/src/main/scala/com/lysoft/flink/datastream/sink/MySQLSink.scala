@@ -10,32 +10,33 @@ import org.apache.flink.streaming.api.scala._
 /**
  * 将数据写入MySQL
  */
-object Sink2MySQL {
+object MySQLSink {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     //从集合构建数据
-    val collectionDStream: DataStream[SensorReading] = env.fromCollection(List(
-      SensorReading("sensor_1", 1547718199, 35.80018327300259),
-      SensorReading("sensor_6", 1547718201, 15.402984393403084),
-      SensorReading("sensor_7", 1547718202, 6.720945201171228),
-      SensorReading("sensor_10", 1547718205, 38.101067604893444),
-      SensorReading("sensor_1", 1547718206, 40.80018327300259),
-      SensorReading("sensor_10", 1547718208, 50.101067604893444)
-    ))
+    val collectionDStream: DataStream[SensorReading] = env.fromCollection(
+      List(
+        SensorReading("sensor_1", 1547718199, 35.80018327300259),
+        SensorReading("sensor_6", 1547718201, 15.402984393403084),
+        SensorReading("sensor_7", 1547718202, 6.720945201171228),
+        SensorReading("sensor_10", 1547718205, 38.101067604893444),
+        SensorReading("sensor_1", 1547718206, 40.80018327300259),
+        SensorReading("sensor_10", 1547718208, 50.101067604893444)
+      ))
 
     //写入MySQL
     collectionDStream
-      //keyBy之后再写入，避免多个线程同时写入主键冲突问题，或者设置sink的并行度为1
+      //keyBy之后再写入避免多个线程同时写入主键冲突问题或者设置sink的并行度为1
       .keyBy(_.id)
-      .addSink(new MySQLJDBCSink())
-      //设置sink的并行度为1, 避免多个线程同时写入主键冲突问题
-      //.setParallelism(1)
+      .addSink(new MySQLJdbcSink())
+    //设置sink的并行度为1, 避免多个线程同时写入主键冲突问题
+    //.setParallelism(1)
 
     //启动
-    env.execute("Sink2MySQL")
+    env.execute("MySQLSink")
   }
 
 }
@@ -44,7 +45,7 @@ object Sink2MySQL {
  * 自定义sink，写入MySQL数据库
  * create table t_temperature(sensor varchar(20) not null, temperature double not null);
  */
-class MySQLJDBCSink extends RichSinkFunction[SensorReading] {
+class MySQLJdbcSink extends RichSinkFunction[SensorReading] {
 
   var connection: Connection = _
   var updateStmt: PreparedStatement = _
