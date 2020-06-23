@@ -1,15 +1,18 @@
-package com.lysoft.flink.wc
+package com.lysoft.flink.wordcount
 
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.scala._
 
+/**
+ * 统计单词次数
+ */
 object StreamWordCount {
 
   def main(args: Array[String]): Unit = {
-    //获取命令行参数
+    //从命令行获取参数
     val params: ParameterTool = ParameterTool.fromArgs(args)
-    val hostname: String = params.get("host")
-    val port: Int = params.getInt("port")
+    val hostname: String = params.getRequired("host")
+    val port: Int = params.getRequired("port").toInt
 
     //创建执行环境
     val env = StreamExecutionEnvironment.getExecutionEnvironment

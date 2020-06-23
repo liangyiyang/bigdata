@@ -6,7 +6,7 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
 
-object Source4Kafka {
+object KafkaSource {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -25,7 +25,7 @@ object Source4Kafka {
     kafkaStream.print("kafkaStream").setParallelism(1)
 
     //启动
-    env.execute("Source4Kafka")
+    env.execute("KafkaSource")
   }
 
 }

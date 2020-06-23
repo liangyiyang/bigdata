@@ -1,8 +1,12 @@
-package com.lysoft.flink.datastream.source
+package com.lysoft.flink.datastream.transform
 
+import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 
-object Source4Collection {
+/**
+ * 根据key分组，将相同的一组key数据发送到同一个task中进行计算，并进行reduce操作。
+ */
+object ReduceTransform {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -18,11 +22,17 @@ object Source4Collection {
       SensorReading("sensor_10", 1547718208, 50.101067604893444)
     ))
 
+    val reduceStream: DataStream[SensorReading] = collectionDStream
+      .keyBy("id")
+        .reduce((x, y) => {
+          SensorReading(x.id, x.timestamp + 1, y.temperature)
+        })
+
     //打印输出
-    collectionDStream.print("collectionDStream:").setParallelism(1)
+    reduceStream.print("reduceStream:").setParallelism(1)
 
     //启动
-    env.execute("Source4Collection")
+    env.execute("ReduceTransform")
   }
 
 }

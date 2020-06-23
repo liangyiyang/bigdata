@@ -2,7 +2,7 @@ package com.lysoft.flink.datastream.source
 
 import org.apache.flink.streaming.api.scala._
 
-object Source4Elements {
+object ElementsSource {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -15,7 +15,7 @@ object Source4Elements {
     elementsStream.print("elementsStream:").setParallelism(1)
 
     //启动
-    env.execute("Source4Elements")
+    env.execute("ElementsSource")
   }
 
 }

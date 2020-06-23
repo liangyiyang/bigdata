@@ -4,9 +4,9 @@ import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 
 /**
- * 根据key分组，将相同的一组key数据发送到同一个task中进行计算，并进行reduce操作。
+ * 将多个流合并成1个流，union的流数据类型要相同，一次可以union多个流。
  */
-object Transform4Reduce {
+object UnionTransform {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -22,17 +22,19 @@ object Transform4Reduce {
       SensorReading("sensor_10", 1547718208, 50.101067604893444)
     ))
 
-    val reduceStream: DataStream[SensorReading] = collectionDStream
-      .keyBy("id")
-        .reduce((x, y) => {
-          SensorReading(x.id, x.timestamp + 1, y.temperature)
-        })
+    //切分流，已过时，Please use side output instead.
+    val splitSream: SplitStream[SensorReading] = collectionDStream.split(sensorData => if (sensorData.temperature > 30) Seq("high") else Seq("low"))
+
+    val high: DataStream[SensorReading] = splitSream.select("high")
+    val low: DataStream[SensorReading] = splitSream.select("low")
+
+    val unionStream: DataStream[SensorReading] = high.union(low)
 
     //打印输出
-    reduceStream.print("reduceStream:").setParallelism(1)
+    unionStream.print("unionStream:").setParallelism(1)
 
     //启动
-    env.execute("Transform4Reduce")
+    env.execute("UnionTransform")
   }
 
 }

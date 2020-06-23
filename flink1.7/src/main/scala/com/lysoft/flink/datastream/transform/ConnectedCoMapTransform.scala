@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.scala._
 /**
  * 将2个流合并成1个流，流的数据类型可以不一样，且一次只能连接2个流。
  */
-object Transform4ConnectedCoMap {
+object ConnectedCoMapTransform {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -40,7 +40,7 @@ object Transform4ConnectedCoMap {
     coMap.print("coMap:").setParallelism(1)
 
     //启动
-    env.execute("Transform4ConnectedCoMap")
+    env.execute("ConnectedCoMapTransform")
   }
 
 }

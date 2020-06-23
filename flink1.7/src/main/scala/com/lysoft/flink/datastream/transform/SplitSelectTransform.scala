@@ -4,9 +4,9 @@ import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 
 /**
- * 将多个流合并成1个流，union的流数据类型要相同，一次可以union多个流。
+ * 根据某个条件，将一个流切分成多个流，分别对数据流进行不同的处理
  */
-object Transform4Union {
+object SplitSelectTransform {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -27,14 +27,15 @@ object Transform4Union {
 
     val high: DataStream[SensorReading] = splitSream.select("high")
     val low: DataStream[SensorReading] = splitSream.select("low")
-
-    val unionStream: DataStream[SensorReading] = high.union(low)
+    val all: DataStream[SensorReading] = splitSream.select("high", "low")
 
     //打印输出
-    unionStream.print("unionStream:").setParallelism(1)
+    high.print("high:").setParallelism(1)
+    low.print("low:").setParallelism(1)
+    all.print("all:").setParallelism(1)
 
     //启动
-    env.execute("Transform4Union")
+    env.execute("SplitSelectTransform")
   }
 
 }

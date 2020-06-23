@@ -1,7 +1,10 @@
-package com.lysoft.flink.wc
+package com.lysoft.flink.wordcount
 
 import org.apache.flink.api.scala._
 
+/**
+ * 统计单词次数
+ */
 object WordCount {
 
   def main(args: Array[String]): Unit = {

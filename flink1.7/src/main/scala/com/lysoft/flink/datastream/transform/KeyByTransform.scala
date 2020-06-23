@@ -4,9 +4,9 @@ import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 
 /**
- * 根据某个条件，将一个流切分成多个流，分别对数据流进行不同的处理
+ * 根据key分组，将相同的一组key数据发送到同一个task中进行计算，并进行聚合。
  */
-object Transform4SplitSelect {
+object KeyByTransform {
 
   def main(args: Array[String]): Unit = {
     //创建执行环境
@@ -22,20 +22,15 @@ object Transform4SplitSelect {
       SensorReading("sensor_10", 1547718208, 50.101067604893444)
     ))
 
-    //切分流，已过时，Please use side output instead.
-    val splitSream: SplitStream[SensorReading] = collectionDStream.split(sensorData => if (sensorData.temperature > 30) Seq("high") else Seq("low"))
-
-    val high: DataStream[SensorReading] = splitSream.select("high")
-    val low: DataStream[SensorReading] = splitSream.select("low")
-    val all: DataStream[SensorReading] = splitSream.select("high", "low")
+    val keyedStream: DataStream[SensorReading] = collectionDStream
+      .keyBy("id")
+      .sum("temperature")
 
     //打印输出
-    high.print("high:").setParallelism(1)
-    low.print("low:").setParallelism(1)
-    all.print("all:").setParallelism(1)
+    keyedStream.print("keyedStream:").setParallelism(1)
 
     //启动
-    env.execute("Transform4SplitSelect")
+    env.execute("KeyByTransform")
   }
 
 }
