@@ -24,9 +24,9 @@ object ReduceTransform {
 
     val reduceStream: DataStream[SensorReading] = collectionDStream
       .keyBy("id")
-        .reduce((x, y) => {
-          SensorReading(x.id, x.timestamp + 1, y.temperature)
-        })
+      .reduce((x: SensorReading, y: SensorReading) => {
+        SensorReading(x.id, x.timestamp + 1, y.temperature)
+      })
 
     //打印输出
     reduceStream.print("reduceStream:").setParallelism(1)
