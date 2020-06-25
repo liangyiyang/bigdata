@@ -41,7 +41,7 @@ object SideOutputTest {
     processedStream.print("processed data")
     processedStream.getSideOutput(new OutputTag[String]("freezing alert")).print("alert data")
 
-    env.execute("sideOutput test")
+    env.execute("SideOutputTest")
   }
 
 }

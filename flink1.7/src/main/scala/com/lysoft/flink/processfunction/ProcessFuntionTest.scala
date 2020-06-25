@@ -28,7 +28,7 @@ object ProcessFuntionTest {
     dataStream.print("input data")
     processedStream.print("processed data")
 
-    env.execute("processfunction test")
+    env.execute("ProcessFuntionTest")
   }
 
 }

@@ -1,7 +1,5 @@
 package com.lysoft.flink.state
 
-import java.util
-
 import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.api.common.functions.RichFlatMapFunction
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
