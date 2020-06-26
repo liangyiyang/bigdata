@@ -1,9 +1,11 @@
 package com.lysoft.flink.hotitemsAnalysis
 
 import java.sql.Timestamp
+import java.util.Properties
 import java.util.concurrent.TimeUnit
 
 import org.apache.flink.api.common.functions.AggregateFunction
+import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.TimeCharacteristic
@@ -12,6 +14,7 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.scala.function.WindowFunction
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
 import org.apache.flink.util.Collector
 
 import scala.collection.mutable.ListBuffer
@@ -34,8 +37,19 @@ object HotItems {
     //设置时间语义
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val filePath: String = HotItems.getClass.getResource("/UserBehavior.csv").getPath
-    val dataStream: DataStream[UserBehavior] = env.readTextFile(filePath).map(line => {
+    //从kafka读取数据
+    val props: Properties = new Properties()
+    props.setProperty("bootstrap.servers", "172.18.46.204:9092")
+    props.setProperty("group.id", "CID_alikafka_hsrj_flume")
+    props.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    props.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    props.setProperty("auto.offset.reset", "latest")
+
+    val kafkaStream: DataStream[String] = env.addSource(new FlinkKafkaConsumer010[String]("hotitems", new SimpleStringSchema(), props))
+
+    //val filePath: String = HotItems.getClass.getResource("/UserBehavior.csv").getPath
+    //val dataStream: DataStream[UserBehavior] = env.readTextFile(filePath).map(line => {
+    val dataStream: DataStream[UserBehavior] = kafkaStream.map(line => {
       val arr: Array[String] = line.split("\\,")
       UserBehavior(arr(0).trim.toLong, arr(1).trim.toLong, arr(2).trim.toLong, arr(3).trim, arr(4).trim.toLong)
     }).assignAscendingTimestamps(_.timestamp * 1000L)
@@ -59,7 +73,10 @@ class CountAgg() extends AggregateFunction[UserBehavior, Long, Long] {
 
   override def createAccumulator(): Long = 0L
 
-  override def add(value: UserBehavior, accumulator: Long): Long = accumulator + 1
+  override def add(value: UserBehavior, accumulator: Long): Long = {
+    println("add")
+    accumulator + 1
+  }
 
   override def getResult(accumulator: Long): Long = accumulator
 
@@ -72,7 +89,9 @@ class AverageAgg() extends AggregateFunction[UserBehavior, (Long, Int), Double] 
 
   override def createAccumulator(): (Long, Int) = (0L, 0)
 
-  override def add(value: UserBehavior, accumulator: (Long, Int)): (Long, Int) = (accumulator._1 + value.timestamp, accumulator._2 + 1)
+  override def add(value: UserBehavior, accumulator: (Long, Int)): (Long, Int) = {
+    (accumulator._1 + value.timestamp, accumulator._2 + 1)
+  }
 
   override def getResult(accumulator: (Long, Int)): Double = accumulator._1 / accumulator._2
 
@@ -84,6 +103,7 @@ class AverageAgg() extends AggregateFunction[UserBehavior, (Long, Int), Double] 
 class WindowResult() extends WindowFunction[Long, ItemViewCount, Long, TimeWindow] {
 
   override def apply(key: Long, window: TimeWindow, input: Iterable[Long], out: Collector[ItemViewCount]): Unit = {
+    println("apply")
     out.collect(ItemViewCount(key, window.getEnd, input.iterator.next()))
   }
 
@@ -98,6 +118,7 @@ class TopNHotItems(topN: Int) extends KeyedProcessFunction[Long, ItemViewCount, 
   }
 
   override def processElement(value: ItemViewCount, ctx: KeyedProcessFunction[Long, ItemViewCount, String]#Context, out: Collector[String]): Unit = {
+    println("processElement")
     //把每一条数据都放入状态列表
     itemState.add(value)
     //注册一个定时器
@@ -105,6 +126,7 @@ class TopNHotItems(topN: Int) extends KeyedProcessFunction[Long, ItemViewCount, 
   }
 
   override def onTimer(timestamp: Long, ctx: KeyedProcessFunction[Long, ItemViewCount, String]#OnTimerContext, out: Collector[String]): Unit = {
+    println("onTimer")
     //将state中所有数据放入一个ListBuffer
     val allItems: ListBuffer[ItemViewCount] = new ListBuffer[ItemViewCount]
     import scala.collection.JavaConversions._
