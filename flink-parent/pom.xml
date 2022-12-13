@@ -9,7 +9,8 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>flink-demo</module>
+        <module>flink-scala</module>
+        <module>flink-java</module>
     </modules>
 
 </project>
