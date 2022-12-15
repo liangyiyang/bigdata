@@ -1,4 +1,4 @@
-package com.lysoft.flink.datastream.source
+package com.lysoft.datastream.source
 
 //传感器温度样例类
 case class SensorReading(

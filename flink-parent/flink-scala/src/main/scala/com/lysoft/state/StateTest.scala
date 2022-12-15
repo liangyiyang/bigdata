@@ -1,6 +1,6 @@
-package com.lysoft.flink.state
+package com.lysoft.state
 
-import com.lysoft.flink.datastream.source.SensorReading
+import com.lysoft.datastream.source.SensorReading
 import org.apache.flink.api.common.functions.RichFlatMapFunction
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.configuration.Configuration

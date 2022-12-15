@@ -1,4 +1,4 @@
-package com.lysoft.flink.datastream.source
+package com.lysoft.datastream.source
 
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}

@@ -1,4 +1,4 @@
-package com.lysoft.flink.hotitemsAnalysis
+package com.lysoft.hotitemsAnalysis
 
 import java.sql.Timestamp
 import java.util.Properties

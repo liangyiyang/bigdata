@@ -1,6 +1,6 @@
-package com.lysoft.flink.processfunction
+package com.lysoft.processfunction
 
-import com.lysoft.flink.datastream.source.SensorReading
+import com.lysoft.datastream.source.SensorReading
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor

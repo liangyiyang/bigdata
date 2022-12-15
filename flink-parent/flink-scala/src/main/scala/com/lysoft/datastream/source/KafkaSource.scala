@@ -1,4 +1,4 @@
-package com.lysoft.flink.datastream.source
+package com.lysoft.datastream.source
 
 import java.util.Properties
 

@@ -1,4 +1,4 @@
-package com.lysoft.flink.wordcount
+package com.lysoft.wordcount
 
 import org.apache.flink.api.scala._
 

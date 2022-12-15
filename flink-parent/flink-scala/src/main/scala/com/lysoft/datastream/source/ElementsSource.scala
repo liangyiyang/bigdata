@@ -1,4 +1,4 @@
-package com.lysoft.flink.datastream.source
+package com.lysoft.datastream.source
 
 import org.apache.flink.streaming.api.scala._
 

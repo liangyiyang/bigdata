@@ -1,8 +1,8 @@
-package com.lysoft.flink.datastream.sink
+package com.lysoft.datastream.sink
+
+import com.lysoft.datastream.source.SensorReading
 
 import java.sql.{Connection, DriverManager, PreparedStatement}
-
-import com.lysoft.flink.datastream.source.SensorReading
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.sink.{RichSinkFunction, SinkFunction}
 import org.apache.flink.streaming.api.scala._

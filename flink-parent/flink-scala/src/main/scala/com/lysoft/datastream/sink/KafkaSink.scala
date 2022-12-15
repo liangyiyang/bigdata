@@ -1,6 +1,6 @@
-package com.lysoft.flink.datastream.sink
+package com.lysoft.datastream.sink
 
-import com.lysoft.flink.datastream.source.SensorReading
+import com.lysoft.datastream.source.SensorReading
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer010

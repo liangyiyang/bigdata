@@ -1,6 +1,6 @@
-package com.lysoft.flink.datastream.transform
+package com.lysoft.datastream.transform
 
-import com.lysoft.flink.datastream.source.SensorReading
+import com.lysoft.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 
 /**

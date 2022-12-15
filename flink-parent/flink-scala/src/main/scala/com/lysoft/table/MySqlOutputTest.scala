@@ -1,6 +1,6 @@
-package com.lysoft.flink.table
+package com.lysoft.table
 
-import com.lysoft.flink.datastream.source.SensorReading
+import com.lysoft.datastream.source.SensorReading
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.{EnvironmentSettings, Table}
 import org.apache.flink.table.api.scala._

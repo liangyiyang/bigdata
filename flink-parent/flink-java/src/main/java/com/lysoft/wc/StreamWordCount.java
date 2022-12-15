@@ -1,4 +1,4 @@
-package com.lysoft.flink.wc;
+package com.lysoft.wc;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
@@ -21,9 +21,9 @@ public class StreamWordCount {
         //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        ParameterTool parameterTool = ParameterTool.fromArgs(args);
-        String hostname = parameterTool.get("hostname");
-        int port = parameterTool.getInt("port");
+        ParameterTool pt = ParameterTool.fromArgs(args);
+        String hostname = pt.get("hostname");
+        int port = pt.getInt("port");
 
         //2. 读取文件
         DataStreamSource<String> dataStreamSource = env.socketTextStream(hostname, port);

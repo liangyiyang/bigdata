@@ -1,4 +1,4 @@
-package com.lysoft.flink.networkflow
+package com.lysoft.networkflow
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat

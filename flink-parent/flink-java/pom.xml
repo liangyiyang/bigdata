@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <flink.version>1.13.6</flink.version>
+        <flink.version>1.13.0</flink.version>
         <java.version>1.8</java.version>
         <scala.binary.version>2.11</scala.binary.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -58,5 +58,51 @@
             <version>2.14.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <!-- 该插件用于将Scala代码编译成class文件 -->
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.4.6</version>
+                <executions>
+                    <execution>
+                        <!-- 声明绑定到maven的compile阶段 -->
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
