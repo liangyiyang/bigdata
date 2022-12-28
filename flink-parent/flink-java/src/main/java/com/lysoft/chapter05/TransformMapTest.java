@@ -5,6 +5,11 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+/**
+ * 功能说明：测试Map转换算子
+ * author:liangyy
+ * createtime：2022-12-28 20:38:10
+ */
 public class TransformMapTest {
 
     public static void main(String[] args) throws Exception {
@@ -15,7 +20,8 @@ public class TransformMapTest {
         //2. 从元素读取数据
         DataStreamSource<Event> stream = env.fromElements(
                 new Event("Mary", "./home", 1000L),
-                new Event("Bob", "./cart", 2000L)
+                new Event("Bob", "./cart", 2000L),
+                new Event("Alice", "./prod?id=1", 3000L)
         );
 
         SingleOutputStreamOperator<String> mapStream = stream.map(event -> event.getUser());
