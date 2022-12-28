@@ -8,7 +8,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * author:liangyy
  * createtime：2022-12-28 09:45:48
  */
-public class SourceCustomerTest {
+public class SourceCustomTest {
 
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境
