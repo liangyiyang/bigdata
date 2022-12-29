@@ -29,12 +29,7 @@ public class TransformFilterTest {
 //        SingleOutputStreamOperator<Event> filterStream = stream.filter((FilterFunction<Event>) event -> event.getUser().contains("Mary"));
 //        SingleOutputStreamOperator<Event> filterStream = stream.filter(new KeyWordFilter("Bob"));
 
-        SingleOutputStreamOperator<Event> filterStream = stream.filter(new FilterFunction<Event>() {
-            @Override
-            public boolean filter(Event event) throws Exception {
-                return event.getUser().contains("Alice");
-            }
-        });
+        SingleOutputStreamOperator<Event> filterStream = stream.filter((FilterFunction<Event>) event -> event.getUser().contains("Alice"));
 
         filterStream.print();
 
