@@ -12,7 +12,7 @@ import java.util.Properties;
  * author:liangyy
  * createtime：2022-12-28 09:45:48
  */
-public class KafkaSourceTest {
+public class SourceKafkaTest {
 
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境
@@ -20,7 +20,7 @@ public class KafkaSourceTest {
 
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9092");
-        properties.setProperty("group.id", "consumer-group");
+        properties.setProperty("group.id", "consumer-group-01");
         properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.setProperty("auto.offset.reset", "latest");
@@ -30,7 +30,7 @@ public class KafkaSourceTest {
 
         clicks.print();
 
-        env.execute();
+        env.execute(SourceKafkaTest.class.getSimpleName());
     }
 
 }

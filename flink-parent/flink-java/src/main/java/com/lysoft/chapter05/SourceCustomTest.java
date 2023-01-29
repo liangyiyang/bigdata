@@ -20,7 +20,7 @@ public class SourceCustomTest {
 
         stream.print();
 
-        env.execute();
+        env.execute(SourceCustomTest.class.getSimpleName());
     }
 
 }

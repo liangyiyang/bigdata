@@ -19,23 +19,27 @@ public class SourceCustomParallelTest {
         env.setParallelism(1);
 
         //2. 添加自定义source
-        DataStreamSource<Integer> stream = env.addSource(new ParallelClickSource()).setParallelism(2);
+        DataStreamSource<Event> stream = env.addSource(new ParallelClickSource()).setParallelism(2);
 
         stream.print();
 
-        env.execute();
+        env.execute(SourceCustomParallelTest.class.getSimpleName());
     }
 
-    public static class ParallelClickSource implements ParallelSourceFunction<Integer> {
+    public static class ParallelClickSource implements ParallelSourceFunction<Event> {
 
         private boolean isRunning = true;
 
         private Random random = new Random();
 
         @Override
-        public void run(SourceContext<Integer> ctx) throws Exception {
+        public void run(SourceContext<Event> ctx) throws Exception {
+            String[] users = {"Mary", "Alice", "Bob", "Cary"};
+            String[] urls = {"./home", "./cart", "./fav", "./prod?id=1", "./prod?id=2"};
+
             while (isRunning) {
-                ctx.collect(random.nextInt());
+                ctx.collect(new Event(users[random.nextInt(users.length)], urls[random.nextInt(urls.length)], System.currentTimeMillis()));
+                // 隔1秒生成一个点击事件，方便观测
                 Thread.sleep(1000);
             }
         }

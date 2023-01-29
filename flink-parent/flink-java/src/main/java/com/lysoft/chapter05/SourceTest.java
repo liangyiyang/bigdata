@@ -46,7 +46,7 @@ public class SourceTest {
         //elementStream.print("elementStream");
         socketStream.print("socketStream");
 
-        env.execute();
+        env.execute(SourceTest.class.getSimpleName());
     }
 
 }
