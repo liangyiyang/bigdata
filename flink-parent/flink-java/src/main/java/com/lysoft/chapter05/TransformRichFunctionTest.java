@@ -16,7 +16,7 @@ public class TransformRichFunctionTest {
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(1);
+        env.setParallelism(2);
 
         //2. 从元素读取数据
         DataStreamSource<Event> stream = env.fromElements(
@@ -25,7 +25,7 @@ public class TransformRichFunctionTest {
                 new Event("Alice", "./prod?id=1", 3000L)
         );
 
-        stream.map(new RichMapFunction<Event, Long>() {
+        stream.map(new RichMapFunction<Event, String>() {
 
             @Override
             public void open(Configuration parameters) throws Exception {
@@ -34,8 +34,8 @@ public class TransformRichFunctionTest {
             }
 
             @Override
-            public Long map(Event event) throws Exception {
-                return event.getTimestamp();
+            public String map(Event event) throws Exception {
+                return event.toString();
             }
 
             @Override
@@ -46,7 +46,7 @@ public class TransformRichFunctionTest {
 
         }).print();
 
-        env.execute();
+        env.execute(TransformRichFunctionTest.class.getSimpleName());
     }
 
 }

@@ -30,7 +30,7 @@ public class TransformMapTest {
 
         mapStream.print();
 
-        env.execute();
+        env.execute(TransformMapTest.class.getSimpleName());
     }
 
     public static class UserExtractor implements MapFunction<Event, String> {

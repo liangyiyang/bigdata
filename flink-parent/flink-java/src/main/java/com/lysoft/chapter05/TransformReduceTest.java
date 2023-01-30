@@ -26,14 +26,14 @@ public class TransformReduceTest {
         SingleOutputStreamOperator<Tuple2<String, Long>> tupleStream = clickStream.map(data -> Tuple2.of(data.getUser(), 1L)).returns(new TypeHint<Tuple2<String, Long>>() {});
 
         //求每个用户的访问次数
-        SingleOutputStreamOperator<Tuple2<String, Long>> reduceStream = tupleStream.keyBy(data -> data.f0).reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> Tuple2.of(value1.f0, value1.f1 + value2.f1));
+        SingleOutputStreamOperator<Tuple2<String, Long>> userViewCountStream = tupleStream.keyBy(data -> data.f0).reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> Tuple2.of(value1.f0, value1.f1 + value2.f1));
 
         //求访问次数最多的用户
-        SingleOutputStreamOperator<Tuple2<String, Long>> result = reduceStream.keyBy(data -> "key").reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> (value1.f1 > value2.f1 ? value1 : value2));
+        SingleOutputStreamOperator<Tuple2<String, Long>> result = userViewCountStream.keyBy(data -> "key").reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> (value1.f1 > value2.f1 ? value1 : value2));
 
         result.print();
 
-        env.execute();
+        env.execute(TransformReduceTest.class.getSimpleName());
     }
 
 }

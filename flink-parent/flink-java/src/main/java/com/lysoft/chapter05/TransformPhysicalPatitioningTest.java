@@ -79,7 +79,7 @@ public class TransformPhysicalPatitioningTest {
                 })
                 .print("partitionCustom").setParallelism(2);
 
-        env.execute();
+        env.execute(TransformPhysicalPatitioningTest.class.getSimpleName());
     }
 
 }

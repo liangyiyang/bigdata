@@ -42,7 +42,7 @@ public class TransformFlatMapTest {
 
         flatMapStream.print();
 
-        env.execute();
+        env.execute(TransformFlatMapTest.class.getSimpleName());
     }
 
     public static class MyFlatMapFunction implements FlatMapFunction<Event, String> {
