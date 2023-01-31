@@ -8,7 +8,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import java.util.Properties;
 
 /**
- * 功能说明：测试sink算子，将结果输出到kafka。
+ * 功能说明：测试sink算子，将数据写入kafka。
  * author:liangyy
  * createtime：2022-12-28 21:50:10
  */

@@ -1,10 +1,9 @@
-package com.lysoft.wc;
+package com.lysoft.chapter02;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -15,18 +14,14 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * author:liangyy
  * createtime：2022-12-14 09:45:48
  */
-public class StreamWordCount {
+public class BoundedWordCount {
 
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        ParameterTool pt = ParameterTool.fromArgs(args);
-        String hostname = pt.get("hostname");
-        int port = pt.getInt("port");
-
         //2. 读取文件
-        DataStreamSource<String> dataStreamSource = env.socketTextStream(hostname, port);
+        DataStreamSource<String> dataStreamSource = env.readTextFile(BoundedWordCount.class.getResource("/words.txt").getPath());
 
         //3. 将单词组装成元组类型
         SingleOutputStreamOperator<Tuple2<String, Long>> streamOperator = dataStreamSource.flatMap((FlatMapFunction<String, Tuple2<String, Long>>) (line, out) -> {

@@ -12,9 +12,10 @@ import org.elasticsearch.client.Requests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
- * 功能说明：测试sink算子，将结果输出到es。
+ * 功能说明：测试sink算子，将数据写入es。
  * author:liangyy
  * createtime：2022-12-28 21:50:10
  */
@@ -39,7 +40,7 @@ public class Sink2EsTest {
         );
 
         //定义es集群hosts
-        ArrayList<HttpHost> httpHosts = new ArrayList<>();
+        List<HttpHost> httpHosts = new ArrayList<>();
         httpHosts.add(new HttpHost("localhost", 9200, "http"));
 
         //定义ElasticsearchSinkFunction

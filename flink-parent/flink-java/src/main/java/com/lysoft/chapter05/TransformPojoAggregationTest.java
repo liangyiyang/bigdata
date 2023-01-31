@@ -11,7 +11,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * createtime：2022-12-28 20:50:10
  *
  * min/max函数返回的是最早第一次接收到的那条记录，聚合字段的值则为min/max结果对应的值。
- * minBy函数返回的是指定聚合字段最小的那条记录，maxBy函数返回的是指定聚合字段最大的那条记录。
+ * minBy函数返回的是指定聚合字段最小值的整条记录，maxBy函数返回的是指定聚合字段最大值的整条记录。
  */
 public class TransformPojoAggregationTest {
 

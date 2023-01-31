@@ -9,11 +9,11 @@ import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommandDes
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
 
 /**
- * 功能说明：测试sink算子，将结果输出到redis。
+ * 功能说明：测试sink算子，将数据写入redis。
  * author:liangyy
  * createtime：2022-12-28 21:50:10
  */
-public class Sink2Redis {
+public class Sink2RedisTest {
 
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境

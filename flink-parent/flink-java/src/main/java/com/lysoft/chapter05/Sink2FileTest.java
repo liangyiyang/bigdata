@@ -10,7 +10,7 @@ import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.
 import java.util.concurrent.TimeUnit;
 
 /**
- * 功能说明：测试sink算子，将结果输出到文件。
+ * 功能说明：测试sink算子，将数据写入文件。
  * author:liangyy
  * createtime：2022-12-28 21:50:10
  */
@@ -38,11 +38,11 @@ public class Sink2FileTest {
         StreamingFileSink<String> fileSink = StreamingFileSink.<String>forRowFormat(
                     new Path("./output"), new SimpleStringEncoder<>("UTF-8")
                 ).withRollingPolicy(
-                     //定义文件滚动规则
+                     //定义文件滚动策略
                      DefaultRollingPolicy.builder()
                         .withRolloverInterval(TimeUnit.MINUTES.toMillis(10)) //10分钟触发滚动
                         .withInactivityInterval(TimeUnit.MINUTES.toMillis(5)) //5分钟没有数据写入触发滚动
-                        .withMaxPartSize(1024 * 1024 * 128) //文件大小触发滚动 128M
+                        .withMaxPartSize(1024 * 1024 * 128) //达到文件大小触发滚动 128M
                         .build()
                 ).build();
 
