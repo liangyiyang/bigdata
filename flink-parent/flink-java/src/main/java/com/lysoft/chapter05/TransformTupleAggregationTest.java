@@ -42,7 +42,7 @@ public class TransformTupleAggregationTest {
 //        keyedStream.minBy(2).print();
 //        keyedStream.minBy("f2").print();
 
-        env.execute(TransformTupleAggregationTest.class.getSimpleName());
+        env.execute();
     }
 
 }

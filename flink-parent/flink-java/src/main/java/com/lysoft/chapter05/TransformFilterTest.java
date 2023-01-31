@@ -33,7 +33,7 @@ public class TransformFilterTest {
 
         filterStream.print();
 
-        env.execute(TransformFilterTest.class.getSimpleName());
+        env.execute();
     }
 
     public static class KeyWordFilter implements FilterFunction<Event> {

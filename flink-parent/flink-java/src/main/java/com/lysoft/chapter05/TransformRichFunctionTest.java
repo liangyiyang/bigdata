@@ -46,7 +46,7 @@ public class TransformRichFunctionTest {
 
         }).print();
 
-        env.execute(TransformRichFunctionTest.class.getSimpleName());
+        env.execute();
     }
 
 }

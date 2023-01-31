@@ -42,7 +42,7 @@ public class BoundedWordCount {
         sum.print();
 
         //7. 执行
-        env.execute(BoundedWordCount.class.getSimpleName());
+        env.execute();
     }
 
 }

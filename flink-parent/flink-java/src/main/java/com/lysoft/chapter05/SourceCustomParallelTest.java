@@ -23,7 +23,7 @@ public class SourceCustomParallelTest {
 
         stream.print();
 
-        env.execute(SourceCustomParallelTest.class.getSimpleName());
+        env.execute();
     }
 
     public static class ParallelClickSource implements ParallelSourceFunction<Event> {

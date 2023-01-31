@@ -36,7 +36,7 @@ public class TransformPojoAggregationTest {
         keyedStream.min("timestamp").print("min:");
         keyedStream.minBy("timestamp").print("minBy:");
 
-        env.execute(TransformPojoAggregationTest.class.getSimpleName());
+        env.execute();
     }
 
 }

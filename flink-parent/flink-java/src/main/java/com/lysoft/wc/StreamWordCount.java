@@ -47,7 +47,7 @@ public class StreamWordCount {
         sum.print();
 
         //7. 执行
-        env.execute(StreamWordCount.class.getSimpleName());
+        env.execute();
     }
 
 }

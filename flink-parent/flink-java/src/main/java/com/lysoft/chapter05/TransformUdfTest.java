@@ -44,7 +44,7 @@ public class TransformUdfTest {
 //        stream3.print();
         stream4.print();
 
-        env.execute(TransformUdfTest.class.getSimpleName());
+        env.execute();
     }
 
     public static class FlinkFilter implements FilterFunction<Event> {

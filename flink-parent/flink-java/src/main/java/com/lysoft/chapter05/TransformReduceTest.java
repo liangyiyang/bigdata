@@ -33,7 +33,7 @@ public class TransformReduceTest {
 
         result.print();
 
-        env.execute(TransformReduceTest.class.getSimpleName());
+        env.execute();
     }
 
 }

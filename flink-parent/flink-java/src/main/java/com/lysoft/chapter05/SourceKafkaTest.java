@@ -30,7 +30,7 @@ public class SourceKafkaTest {
 
         clicks.print();
 
-        env.execute(SourceKafkaTest.class.getSimpleName());
+        env.execute();
     }
 
 }
