@@ -17,9 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class Sink2FileTest {
 
     public static void main(String[] args) throws Exception {
+        //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(4);
 
+        //2. 构建数据
         DataStreamSource<Event> dataStreamSource = env.fromElements(
                 new Event("Mary", "./home", 1000L),
                 new Event("Bob", "./cart", 2000L),
@@ -32,17 +34,19 @@ public class Sink2FileTest {
                 new Event("Bob", "./prod?id=3", 3300L)
         );
 
+        //3. 构建文件参数
         StreamingFileSink<String> fileSink = StreamingFileSink.<String>forRowFormat(
                     new Path("./output"), new SimpleStringEncoder<>("UTF-8")
                 ).withRollingPolicy(
+                     //定义文件滚动规则
                      DefaultRollingPolicy.builder()
-                        .withRolloverInterval(TimeUnit.MINUTES.toMillis(10))
-                        .withInactivityInterval(TimeUnit.MINUTES.toMillis(5))
-                        .withMaxPartSize(1024 * 1024 * 128)
+                        .withRolloverInterval(TimeUnit.MINUTES.toMillis(10)) //10分钟触发滚动
+                        .withInactivityInterval(TimeUnit.MINUTES.toMillis(5)) //5分钟没有数据写入触发滚动
+                        .withMaxPartSize(1024 * 1024 * 128) //文件大小触发滚动 128M
                         .build()
                 ).build();
 
-        //将Event转换成String写入文件
+        //4. 将Event转换成String写入文件
         dataStreamSource.map(data -> data.toString()).addSink(fileSink);
 
         env.execute();
