@@ -5,7 +5,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import java.util.Random;
 
 /**
- * 功能说明：自定义Source算子
+ * 功能说明：自定义SourceFunction
  * author:liangyy
  * createtime：2022-12-28 09:45:48
  */

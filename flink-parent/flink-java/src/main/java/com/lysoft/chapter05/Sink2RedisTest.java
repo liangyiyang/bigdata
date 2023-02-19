@@ -29,7 +29,7 @@ public class Sink2RedisTest {
         RedisSink<Event> redisSink = new RedisSink<>(flinkJedisPoolConfig, new RedisMapper<Event>() {
             @Override
             public RedisCommandDescription getCommandDescription() {
-                //定义redis操作命令，第二个参数不是必填参数，数据类型是set集合才需要指定集合名称
+                //定义redis操作命令，第二个参数不是必填参数，集合类型要指定集合名称
                 return new RedisCommandDescription(RedisCommand.HSET, "clicks");
                 //return new RedisCommandDescription(RedisCommand.SET);
             }

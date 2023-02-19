@@ -13,6 +13,7 @@ public class SourceCustomTest {
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        // 设置全局并行度为1
         env.setParallelism(1);
 
         //2. 添加自定义source

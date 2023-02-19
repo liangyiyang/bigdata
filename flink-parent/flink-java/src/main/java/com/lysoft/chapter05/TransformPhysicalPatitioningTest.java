@@ -7,7 +7,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunction;
 
 /**
- * 功能说明：测试物理分区
+ * 功能说明：物理分区算子，用于解决数据倾斜问题。
  * author:liangyy
  * createtime：2022-12-29 10:38:10
  */

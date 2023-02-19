@@ -18,6 +18,7 @@ public class SourceKafkaTest {
         //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
+        // kafka消费客户端参数
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9092");
         properties.setProperty("group.id", "consumer-group-01");

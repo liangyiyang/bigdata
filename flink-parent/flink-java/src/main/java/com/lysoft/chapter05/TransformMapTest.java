@@ -24,6 +24,7 @@ public class TransformMapTest {
                 new Event("Alice", "./prod?id=1", 3000L)
         );
 
+        // 映射转换
         SingleOutputStreamOperator<String> mapStream = stream.map(event -> event.getUser());
         //SingleOutputStreamOperator<String> mapStream = stream1.map((MapFunction<Event, String>) event -> event.getUser());
         //SingleOutputStreamOperator<String> mapStream = stream1.map(new UserExtractor());
@@ -33,6 +34,9 @@ public class TransformMapTest {
         env.execute();
     }
 
+    /**
+     * 自定义MapFunction算子
+     */
     public static class UserExtractor implements MapFunction<Event, String> {
 
         @Override

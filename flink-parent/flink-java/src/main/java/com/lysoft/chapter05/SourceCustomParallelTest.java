@@ -16,6 +16,7 @@ public class SourceCustomParallelTest {
     public static void main(String[] args) throws Exception {
         //1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        // 设置全局并行度为1
         env.setParallelism(1);
 
         //2. 添加自定义source
@@ -26,16 +27,18 @@ public class SourceCustomParallelTest {
         env.execute();
     }
 
+    /**
+     * 自定义有多并行度的SourceFunction
+     */
     public static class ParallelClickSource implements ParallelSourceFunction<Event> {
 
         private boolean isRunning = true;
-
-        private Random random = new Random();
 
         @Override
         public void run(SourceContext<Event> ctx) throws Exception {
             String[] users = {"Mary", "Alice", "Bob", "Cary"};
             String[] urls = {"./home", "./cart", "./fav", "./prod?id=1", "./prod?id=2"};
+            Random random = new Random();
 
             while (isRunning) {
                 ctx.collect(new Event(users[random.nextInt(users.length)], urls[random.nextInt(urls.length)], System.currentTimeMillis()));

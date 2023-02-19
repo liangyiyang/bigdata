@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
- * 功能说明：测试Pojo简单聚合算子
+ * 功能说明：测试POJO类型简单聚合算子
  * author:liangyy
  * createtime：2022-12-28 20:50:10
  *
@@ -28,7 +28,10 @@ public class TransformPojoAggregationTest {
                 new Event("Mary", "./prod?id=1", 3000L)
         );
 
+        //3. 调用keyBy算子之后才可以使用聚合函数，keyBy是一个逻辑分区，相同数据分发到同一个分区中，数据分发可能会有数据倾斜
         KeyedStream<Event, String> keyedStream = stream.keyBy((KeySelector<Event, String>) key -> key.getUser());
+
+        // 根据指定的属性名进行聚合
 
         keyedStream.max("timestamp").print("max:");
         keyedStream.maxBy("timestamp").print("maxBy:");

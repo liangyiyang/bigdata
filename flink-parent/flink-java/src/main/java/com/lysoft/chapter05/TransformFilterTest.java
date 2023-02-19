@@ -29,6 +29,7 @@ public class TransformFilterTest {
 //        SingleOutputStreamOperator<Event> filterStream = stream.filter((FilterFunction<Event>) event -> event.getUser().contains("Mary"));
 //        SingleOutputStreamOperator<Event> filterStream = stream.filter(new KeyWordFilter("Bob"));
 
+        // true保留记录，false丢弃记录
         SingleOutputStreamOperator<Event> filterStream = stream.filter((FilterFunction<Event>) event -> event.getUser().contains("Alice"));
 
         filterStream.print();
@@ -36,6 +37,9 @@ public class TransformFilterTest {
         env.execute();
     }
 
+    /**
+     * 自定义FilterFunction算子
+     */
     public static class KeyWordFilter implements FilterFunction<Event> {
 
         private String keyword;

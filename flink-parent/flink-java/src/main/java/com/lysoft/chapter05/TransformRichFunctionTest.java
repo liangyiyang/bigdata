@@ -6,8 +6,8 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
- * 功能说明：测试Rich富函数生命周期
- *         每个并行度open和close方法会被初始化调用一次。
+ * 功能说明：测试RichFunction富函数的生命周期
+ *         每个并行度open和close方法会被调用一次。
  * author:liangyy
  * createtime：2022-12-29 10:38:10
  */
@@ -27,6 +27,11 @@ public class TransformRichFunctionTest {
 
         stream.map(new RichMapFunction<Event, String>() {
 
+            /**
+             * 初始化时每个并行度会调用一次此方法
+             * @param parameters The configuration containing the parameters attached to the contract.
+             * @throws Exception
+             */
             @Override
             public void open(Configuration parameters) throws Exception {
                 super.open(parameters);
@@ -38,6 +43,10 @@ public class TransformRichFunctionTest {
                 return event.toString();
             }
 
+            /**
+             * 销毁的时候会调用一次此方法
+             * @throws Exception
+             */
             @Override
             public void close() throws Exception {
                 super.close();

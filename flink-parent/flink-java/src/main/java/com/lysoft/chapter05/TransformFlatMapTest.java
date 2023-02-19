@@ -29,6 +29,7 @@ public class TransformFlatMapTest {
 
 //        SingleOutputStreamOperator<String> flatMapStream = stream.flatMap(new MyFlatMapFunction());
 
+        // flatMap算子可以输出1条或多条记录
         SingleOutputStreamOperator<String> flatMapStream = stream.flatMap((FlatMapFunction<Event, String>) (event, out) -> {
             if (event.getUser().equals("Mary")) {
                 out.collect(event.getUser());
@@ -45,6 +46,9 @@ public class TransformFlatMapTest {
         env.execute();
     }
 
+    /**
+     * 自定义FlatMapFunction算子
+     */
     public static class MyFlatMapFunction implements FlatMapFunction<Event, String> {
 
         @Override

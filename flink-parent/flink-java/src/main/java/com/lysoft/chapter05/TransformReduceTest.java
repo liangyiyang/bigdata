@@ -28,8 +28,8 @@ public class TransformReduceTest {
         //求每个用户的访问次数
         SingleOutputStreamOperator<Tuple2<String, Long>> userViewCountStream = tupleStream.keyBy(data -> data.f0).reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> Tuple2.of(value1.f0, value1.f1 + value2.f1));
 
-        //求访问次数最多的用户
-        SingleOutputStreamOperator<Tuple2<String, Long>> result = userViewCountStream.keyBy(data -> "key").reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> (value1.f1 > value2.f1 ? value1 : value2));
+        //求访问次数最多的用户，所有数据放在一个分区计算才能得到最终结果
+        SingleOutputStreamOperator<Tuple2<String, Long>> result = userViewCountStream.keyBy(data -> "allKey").reduce((ReduceFunction<Tuple2<String, Long>>) (value1, value2) -> (value1.f1 > value2.f1 ? value1 : value2));
 
         result.print();
 

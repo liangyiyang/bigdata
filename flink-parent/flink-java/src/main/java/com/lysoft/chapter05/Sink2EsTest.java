@@ -39,11 +39,11 @@ public class Sink2EsTest {
                 new Event("Bob", "./prod?id=3", 3300L)
         );
 
-        //定义es集群hosts
+        // 定义es集群hosts
         List<HttpHost> httpHosts = new ArrayList<>();
         httpHosts.add(new HttpHost("localhost", 9200, "http"));
 
-        //定义ElasticsearchSinkFunction
+        // 定义ElasticsearchSinkFunction
         ElasticsearchSinkFunction<Event> elasticsearchSinkFunction = new ElasticsearchSinkFunction<Event>() {
             @Override
             public void process(Event event, RuntimeContext runtimeContext, RequestIndexer requestIndexer) {

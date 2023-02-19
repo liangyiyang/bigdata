@@ -23,21 +23,22 @@ public class SourceTest {
         List<Integer> numList = new ArrayList<>();
         numList.add(1);
         numList.add(2);
-        //3. 从集合读取数据
+        //3. 从集合读取数据-基础数据类型
         DataStreamSource<Integer> numStream = env.fromCollection(numList);
 
         List<Event> eventList = new ArrayList<>();
         eventList.add(new Event("Mary", "./home", 1000L));
         eventList.add(new Event("Bob", "./cart", 2000L));
+        //4. 从集合读取数据-POJO类型
         DataStreamSource<Event> eventStream = env.fromCollection(eventList);
 
-        //4. 从元素读取数据
+        //5. 从元素读取数据-POJO类型
         DataStreamSource<Event> elementStream = env.fromElements(
                 new Event("Mary", "./home", 1000L),
                 new Event("Bob", "./cart", 2000L)
         );
 
-        //5. 从socket文本流读取数据
+        //6. 从socket文本流读取数据
         DataStreamSource<String> socketStream = env.socketTextStream("172.20.108.148", 7777);
 
         //stream1.print("stream1");
