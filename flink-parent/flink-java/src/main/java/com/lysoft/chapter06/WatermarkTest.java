@@ -5,6 +5,9 @@ import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.*;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 
 import java.time.Duration;
 
@@ -51,7 +54,21 @@ public class WatermarkTest {
                             }
                         }));
 
-        stream.print();
+        stream
+//              .windowAll(GlobalWindows.create()) // 非KyedStream的全局窗口只有1个并行度，不推荐使用，效率低。
+                .keyBy(data -> data.getUser())
+//                .window(TumblingEventTimeWindows.of(Time.seconds(10))) // 事件时间-滚动窗口
+//                .window(SlidingEventTimeWindows.of(Time.seconds(10), Time.seconds(2))) // 事件时间-滑动窗口
+//                .window(EventTimeSessionWindows.withGap(Time.minutes(30))) // 事件时间-会话窗口
+
+//                .window(TumblingProcessingTimeWindows.of(Time.seconds(10))) // 处理时间-滚动窗口
+//                .window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(2))) // 处理时间-滑动窗口
+//                .window(ProcessingTimeSessionWindows.withGap(Time.minutes(30))) // 处理时间-会话窗口
+
+//                .countWindow(10) // 计数-滚动窗口
+//                .countWindow(10, 5) // 计数-滑动窗口
+                .windowAll(GlobalWindows.create()) // 全局窗口，keyBy之后的全局窗口，每个key只有1个窗口，全局窗口没有时间的概念，不会关闭窗口，不会触发计算，必须定义触发器才会执行计算。该全局窗口与非KyedStream的全局窗口区别，非KyedStream的全局窗口只有1个并行度。
+                ;
 
         env.execute();
     }

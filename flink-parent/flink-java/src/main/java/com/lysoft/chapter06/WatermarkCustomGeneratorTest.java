@@ -99,7 +99,8 @@ public class WatermarkCustomGeneratorTest {
 
         @Override
         public void onEvent(Event event, long eventTimestamp, WatermarkOutput out) {
-            //只有在遇到特定的条件时，才发出水位线
+            // 可以根据需要定义何时发出Watermark
+            // 下面只有在遇到特定的条件时，才发出Watermark
             if (event.getUser().equals("Alice")) {
                 out.emitWatermark(new Watermark(event.getTimestamp() - 1));
             }
