@@ -55,8 +55,8 @@ public class WatermarkTest {
                         }));
 
         stream
-//              .windowAll(GlobalWindows.create()) // 非KyedStream的全局窗口只有1个并行度，不推荐使用，效率低。
-                .keyBy(data -> data.getUser())
+//              .windowAll(GlobalWindows.create()) // 非KeyedStream的全局窗口只有1个并行度，不推荐使用，效率低。
+                .keyBy(data -> data.getUser()) // keyBy之后的开窗为KeyedStream，按照key进行开窗，每1个key对应1个窗口，同一个key如果跨多个时间窗口，则该key会有多个时间窗口
 //                .window(TumblingEventTimeWindows.of(Time.seconds(10))) // 事件时间-滚动窗口
 //                .window(SlidingEventTimeWindows.of(Time.seconds(10), Time.seconds(2))) // 事件时间-滑动窗口
 //                .window(EventTimeSessionWindows.withGap(Time.minutes(30))) // 事件时间-会话窗口
@@ -67,7 +67,7 @@ public class WatermarkTest {
 
 //                .countWindow(10) // 计数-滚动窗口
 //                .countWindow(10, 5) // 计数-滑动窗口
-                .windowAll(GlobalWindows.create()) // 全局窗口，keyBy之后的全局窗口，每个key只有1个窗口，全局窗口没有时间的概念，不会关闭窗口，不会触发计算，必须定义触发器才会执行计算。该全局窗口与非KyedStream的全局窗口区别，非KyedStream的全局窗口只有1个并行度。
+                .windowAll(GlobalWindows.create()) // 全局窗口，keyBy之后的全局窗口，每个key只有1个窗口，全局窗口没有时间的概念，不会关闭窗口，不会触发计算，必须定义触发器才会执行计算。该全局窗口与非KeyedStream的全局窗口区别，非KeyedStream的全局窗口只有1个并行度。
                 ;
 
         env.execute();
