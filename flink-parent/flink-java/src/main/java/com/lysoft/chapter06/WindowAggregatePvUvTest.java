@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.HashSet;
 
 /**
- * 功能说明：测试Aggregate窗口函数增量聚合
+ * 功能说明：测试自定义AggregateFunction实现窗口增量聚合
  * author:liangyy
  * createtime：2023-02-18 21:50:10
  */
@@ -51,8 +51,8 @@ public class WindowAggregatePvUvTest {
     }
 
     /**
-     * 自定义AggregateFunction聚合函数， 增量聚合pv和uv
-     * AggregateFunction泛型参数
+     * 自定义AggregateFunction增量聚合函数、聚合pv和uv
+     * AggregateFunction泛型参数：
      * 第一个参数IN是数据流输入的数据类型
      * 第二个参数ACC是聚合结果状态的数据类型
      * 第三个参数OUT是聚合结果输出的数据类型
@@ -61,7 +61,7 @@ public class WindowAggregatePvUvTest {
 
         @Override
         public Tuple2<Long, HashSet<String>> createAccumulator() {
-            // 创建初始化1个累加器
+            // 创建初始化1个累加器，只调用一次该方法
             return new Tuple2<>(0L, new HashSet<>());
         }
 
@@ -75,13 +75,13 @@ public class WindowAggregatePvUvTest {
 
         @Override
         public Double getResult(Tuple2<Long, HashSet<String>> accumulator) {
-            // 窗口关闭，返回结算结果
+            // 触发窗口计算，返回计算结果
             return Double.valueOf(accumulator.f0 / accumulator.f1.size());
         }
 
         @Override
         public Tuple2<Long, HashSet<String>> merge(Tuple2<Long, HashSet<String>> a, Tuple2<Long, HashSet<String>> b) {
-            // 窗口数据合并，只有Session会话窗口才需要合并，其他窗口可以不实现该方法
+            // 合并窗口数据，只有Session会话窗口才需要合并，其他窗口可以不实现该方法
             return null;
         }
     }

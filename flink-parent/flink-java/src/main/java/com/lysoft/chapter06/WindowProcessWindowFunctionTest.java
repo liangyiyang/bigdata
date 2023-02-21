@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.HashSet;
 
 /**
- * 功能说明：测试ProcessWindowFunction全窗口函数
+ * 功能说明：测试自定义ProcessWindowFunction全窗口函数，全窗口函数等收集完窗口所有数据后才会触发计算
  * author:liangyy
  * createtime：2023-02-18 21:50:10
  */
@@ -36,7 +36,7 @@ public class WindowProcessWindowFunctionTest {
         DataStreamSource<Event> stream = env.addSource(new ClickSource());
         stream.print("data");
 
-        // 统计每10秒钟访问的UV
+        // 统计每5秒钟访问的UV
         stream.assignTimestampsAndWatermarks(
                         // 有序的数据流
                         WatermarkStrategy.<Event>forBoundedOutOfOrderness(Duration.ZERO)
@@ -49,15 +49,15 @@ public class WindowProcessWindowFunctionTest {
                 )
                 .keyBy(data -> "allKey")
                 .window(TumblingEventTimeWindows.of(Time.seconds(5)))
-                .process(new UvCountByWindow()) // 全窗口函数，等收集完窗口所有数据之后才会关闭窗口，触发计算
+                .process(new UvCountByWindow()) // 全窗口函数，等收集完窗口所有数据之后才会触发计算
                 .print();
 
         env.execute();
     }
 
     /**
-     * 自定义ProcessWindowFunction处理函数
-     * ProcessWindowFunction泛型参数
+     * 自定义ProcessWindowFunction处理窗口函数，全窗口函数，等收集完窗口所有数据之后才会触发计算一次
+     * ProcessWindowFunction泛型参数：
      * 第一个参数IN是数据流输入的数据类型
      * 第二个参数OUT是聚合结果输出的数据类型
      * 第三个参数KEY是KeyBy中key的数据类型

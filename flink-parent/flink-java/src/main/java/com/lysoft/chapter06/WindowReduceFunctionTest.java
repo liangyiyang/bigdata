@@ -16,11 +16,11 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import java.time.Duration;
 
 /**
- * 功能说明：测试ReduceFunction窗口函数增量聚合
+ * 功能说明：测试自定义ReduceFunction实现窗口增量聚合
  * author:liangyy
  * createtime：2023-02-18 21:50:10
  */
-public class WindowReduceTest {
+public class WindowReduceFunctionTest {
 
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -54,7 +54,8 @@ public class WindowReduceTest {
     }
 
     /**
-     * 自定义ReduceFunction聚合函数， 该函数限制聚合的中间状态、输入参数、输出结果等数据类型都要求一致。
+     * 自定义ReduceFunction增量聚合函数
+     * 该函数限制了中间聚合结果、输入参数、输出结果的数据类型，3者参数类型都要求一致，缺乏灵活性、通用性。
      */
     public static class UserViewCntReduceFunction implements ReduceFunction<Tuple2<String, Long>> {
         @Override

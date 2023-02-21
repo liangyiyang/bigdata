@@ -34,7 +34,7 @@ public class WindowAggregateAndProcessWindowUvTest {
         DataStreamSource<Event> stream = env.addSource(new ClickSource());
         stream.print("data");
 
-        // 每2秒计算最近10秒钟用户平均的访问次数
+        // 统计每5秒钟访问的UV
         stream.assignTimestampsAndWatermarks(
                         // 有序的数据流
                         WatermarkStrategy.<Event>forBoundedOutOfOrderness(Duration.ZERO)
@@ -47,15 +47,15 @@ public class WindowAggregateAndProcessWindowUvTest {
                 )
                 .keyBy(data -> "allKey")
                 .window(TumblingEventTimeWindows.of(Time.seconds(5)))
-                .aggregate(new UvAgg(), new UvCountResult())
+                .aggregate(new UvAgg(), new UvCountResult()) // 将增量聚合结果，当作全窗口函数的输入参数，包装窗口信息进行输出
                 .print();
 
         env.execute();
     }
 
     /**
-     * 自定义AggregateFunction聚合函数，增量聚合uv
-     * AggregateFunction泛型参数
+     * 自定义AggregateFunction增量聚合函数，聚合uv
+     * AggregateFunction泛型参数：
      * 第一个参数IN是数据流输入的数据类型
      * 第二个参数ACC是聚合结果状态的数据类型
      * 第三个参数OUT是聚合结果输出的数据类型
@@ -64,7 +64,7 @@ public class WindowAggregateAndProcessWindowUvTest {
 
         @Override
         public HashSet<String> createAccumulator() {
-            // 创建初始化1个累加器
+            // 创建初始化1个累加器，只调用一次该方法
             return new HashSet<>();
         }
 
@@ -78,12 +78,13 @@ public class WindowAggregateAndProcessWindowUvTest {
 
         @Override
         public Long getResult(HashSet<String> accumulator) {
-            // 窗口关闭，返回结算结果
+            // 触发窗口计算，返回计算结果
             return Long.valueOf(accumulator.size());
         }
 
         @Override
         public HashSet<String> merge(HashSet<String> a, HashSet<String> b) {
+            // 合并窗口数据，只有Session会话窗口才需要合并，其他窗口可以不实现该方法
             return null;
         }
     }
@@ -94,7 +95,7 @@ public class WindowAggregateAndProcessWindowUvTest {
      * 第一个参数IN是增量聚合函数输出结果的数据类型
      * 第二个参数OUT是聚合结果输出的数据类型
      * 第三个参数KEY是KeyBy中key的数据类型
-     * 第三个参数W是Window
+     * 第三个参数W是TimeWindow
      */
     public static class UvCountResult extends ProcessWindowFunction<Long, String, String, TimeWindow> {
 
@@ -105,6 +106,7 @@ public class WindowAggregateAndProcessWindowUvTest {
             // 窗口结束时间
             long end = context.window().getEnd();
 
+            // uv
             Long uv = elements.iterator().next();
 
             out.collect("窗口【" + new Timestamp(start) + " ~ " + new Timestamp(end) + "】的UV值是：" + uv);

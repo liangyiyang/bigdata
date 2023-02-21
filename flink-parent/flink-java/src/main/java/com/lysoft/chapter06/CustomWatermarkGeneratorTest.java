@@ -11,11 +11,11 @@ import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
- * 功能说明：测试自定义Watermark生成
+ * 功能说明：测试自定义Watermark生成器
  * author:liangyy
  * createtime：2023-02-18 21:50:10
  */
-public class WatermarkCustomGeneratorTest {
+public class CustomWatermarkGeneratorTest {
 
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
