@@ -88,6 +88,7 @@ public class WindowProcessWindowFunctionTest {
 
             out.collect("窗口【" + new Timestamp(start) + " ~ " + new Timestamp(end) + "】的UV值是：" + hashSet.size());
         }
+
     }
 
 }

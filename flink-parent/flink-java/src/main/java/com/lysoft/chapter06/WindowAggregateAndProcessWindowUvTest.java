@@ -78,7 +78,7 @@ public class WindowAggregateAndProcessWindowUvTest {
 
         @Override
         public Long getResult(HashSet<String> accumulator) {
-            // 触发窗口计算，返回计算结果
+            // 返回计算结果
             return Long.valueOf(accumulator.size());
         }
 
@@ -90,7 +90,7 @@ public class WindowAggregateAndProcessWindowUvTest {
     }
 
     /**
-     * 自定义ProcessWindowFunction 包装窗口信息输出
+     * 自定义ProcessWindowFunction 增量聚合结果，当作全窗口函数的输入参数，包装窗口信息进行输出
      * ProcessWindowFunction泛型参数
      * 第一个参数IN是增量聚合函数输出结果的数据类型
      * 第二个参数OUT是聚合结果输出的数据类型
@@ -111,6 +111,7 @@ public class WindowAggregateAndProcessWindowUvTest {
 
             out.collect("窗口【" + new Timestamp(start) + " ~ " + new Timestamp(end) + "】的UV值是：" + uv);
         }
+
     }
 
 }

@@ -103,5 +103,6 @@ public class UrlViewCountExample {
             // 输出结果
             out.collect(new UrlViewCount(key, viewCount, start, end));
         }
+
     }
 }

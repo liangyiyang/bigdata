@@ -75,7 +75,7 @@ public class WindowAggregatePvUvTest {
 
         @Override
         public Double getResult(Tuple2<Long, HashSet<String>> accumulator) {
-            // 触发窗口计算，返回计算结果
+            // 返回计算结果
             return Double.valueOf(accumulator.f0 / accumulator.f1.size());
         }
 

@@ -72,7 +72,7 @@ public class WindowAggregateFunctionTest {
 
         @Override
         public String getResult(Tuple2<Long, Integer> accumulator) {
-            // 触发窗口计算，返回计算结果
+            // 返回计算结果
             return new Timestamp(accumulator.f0 / accumulator.f1).toString();
         }
 

@@ -67,7 +67,7 @@ public class WatermarkTest {
 
 //                .countWindow(10) // 计数-滚动窗口
 //                .countWindow(10, 5) // 计数-滑动窗口
-                .windowAll(GlobalWindows.create()) // 全局窗口，keyBy之后的全局窗口，每个key全局只有1个窗口，全局窗口没有时间的概念，不会触发计算，不会关闭窗口，必须定义触发器Trigger执行计算。该全局窗口与非KeyedStream的全局窗口区别，非KeyedStream的全局窗口只有1个并行度。
+                .windowAll(GlobalWindows.create()) // 全局窗口，keyBy之后的全局窗口，每个key全局只有1个窗口，全局窗口没有时间的概念，不会触发计算，不会关闭窗口，必须定义触发器(Trigger)执行计算。该全局窗口与非KeyedStream的全局窗口区别，非KeyedStream的全局窗口只有1个并行度。
                 ;
 
         env.execute();
