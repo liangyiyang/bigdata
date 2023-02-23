@@ -66,7 +66,7 @@ public class UrlViewCountExample {
 
         @Override
         public Long add(Event value, Long accumulator) {
-            return accumulator.longValue() + 1L;
+            return accumulator + 1L;
         }
 
         @Override

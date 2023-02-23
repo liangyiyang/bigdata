@@ -56,7 +56,7 @@ public class WindowTriggerTest {
 
         @Override
         public void process(String key, ProcessWindowFunction<Event, String, String, TimeWindow>.Context context, Iterable<Event> elements, Collector<String> out) throws Exception {
-            // url访问次数
+            // url访问次数, 获取迭代器中的元素个数
             Long viewCount = elements.spliterator().getExactSizeIfKnown();
 
             // 窗口的开始时间
