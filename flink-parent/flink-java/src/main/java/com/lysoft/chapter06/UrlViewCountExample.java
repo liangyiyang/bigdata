@@ -26,7 +26,7 @@ public class UrlViewCountExample {
         // 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        // 设置多少毫米的周期性生成Watermark
+        // 设置多少毫秒的周期性生成Watermark
         env.getConfig().setAutoWatermarkInterval(100);
         env.setParallelism(1);
 
