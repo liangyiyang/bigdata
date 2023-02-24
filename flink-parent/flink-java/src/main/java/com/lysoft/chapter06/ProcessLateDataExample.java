@@ -47,8 +47,8 @@ public class ProcessLateDataExample {
                         })
                 ).keyBy(data -> data.getUrl())
                 .window(TumblingEventTimeWindows.of(Time.seconds(10)))
-                .allowedLateness(Time.minutes(1)) // 允许窗口数据最大延迟1分钟内到达，到了窗口结束时间，会先触发一次计算，后续1分钟内来的迟到数据每一条数据会触发一次窗口计算。 窗口在允许的延迟时间之后才关闭。
-                .sideOutputLateData(outputTag) // 收集窗口关闭后，再来迟到的数据
+                .allowedLateness(Time.minutes(1)) // 允许窗口延迟1分钟关闭，以便接受迟到数据，到了窗口结束时间，会先触发一次计算输出结果，后续1分钟内来的迟到数据每一条数据会触发一次窗口计算。
+                .sideOutputLateData(outputTag) // 窗口关闭后，再来迟到的数据，收集到测输流。
                 .aggregate(new UrlViewCountExample.UrlViewCountAgg(), new UrlViewCountExample.UrlViewCountResult());
 
         // 输出统计结果
