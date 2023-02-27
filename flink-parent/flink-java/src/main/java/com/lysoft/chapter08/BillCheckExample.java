@@ -28,17 +28,17 @@ public class BillCheckExample {
 
         // app支付事件
         SingleOutputStreamOperator<Tuple3<String, String, Long>> appStream = env.fromElements(
-                        new Tuple3<>("order-1", "app", 1000L),
-                        new Tuple3<>("order-2", "app", 2000L),
-                        new Tuple3<>("order-3", "app", 3500L)
-                )
-                .assignTimestampsAndWatermarks(WatermarkStrategy.<Tuple3<String, String, Long>>forBoundedOutOfOrderness(Duration.ZERO)
-                        .withTimestampAssigner(new SerializableTimestampAssigner<Tuple3<String, String, Long>>() {
-                            @Override
-                            public long extractTimestamp(Tuple3<String, String, Long> element, long recordTimestamp) {
-                                return element.f2;
-                            }
-                        }));
+                new Tuple3<>("order-1", "app", 1000L),
+                new Tuple3<>("order-2", "app", 2000L),
+                new Tuple3<>("order-3", "app", 3500L)
+        ).assignTimestampsAndWatermarks(WatermarkStrategy.<Tuple3<String, String, Long>>forBoundedOutOfOrderness(Duration.ZERO)
+                .withTimestampAssigner(new SerializableTimestampAssigner<Tuple3<String, String, Long>>() {
+                    @Override
+                    public long extractTimestamp(Tuple3<String, String, Long> element, long recordTimestamp) {
+                        return element.f2;
+                    }
+                })
+        );
 
         // 第三方支付事件
         SingleOutputStreamOperator<Tuple4<String, String, String, Long>> thirdPartyStream = env.fromElements(
@@ -51,7 +51,8 @@ public class BillCheckExample {
                     public long extractTimestamp(Tuple4<String, String, String, Long> element, long recordTimestamp) {
                         return element.f3;
                     }
-                }));
+                })
+        );
 
 
         // 先keyBy再连接，是一种方式
