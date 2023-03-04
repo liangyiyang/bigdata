@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 /**
- * 功能说明：使用Keyed State中的ValueState状态，统计每个用户的URL访问次数，每5秒钟才输出一次统计结果。
+ * 功能说明：使用Keyed State中的ValueState状态，统计每个用户的URL访问次数，每5秒钟输出一次统计结果。
  * author:liangyy
  * createtime：2023-03-03 14:07:10
  */
@@ -46,14 +46,14 @@ public class PeriodicPvExample {
     }
 
     /**
-     * 统计每个用户的URL访问次数，每5秒钟才输出一次统计结果，减少输出频率，避免下游写入数据频繁引起性能问题。
+     * 统计每个用户的URL访问次数，每5秒钟输出一次统计结果，减少输出频率，避免下游写入数据频繁引起性能问题。
      */
     public static class PeriodicPvResult extends KeyedProcessFunction<String, Event, String> {
 
         // 用户的浏览次数
         private ValueState<Long> urlViewCountState;
 
-        // 保存定时器的触发时间，用于判断是否注册过定时器，避免后面数据重复注册，覆盖了之前定时器的触发时间。
+        // 保存定时器的触发时间，用于判断是否注册过定时器，避免后面数据到来重复注册，覆盖了之前定时器的触发时间。
         private ValueState<Long> timerTsState;
 
         @Override
@@ -70,8 +70,9 @@ public class PeriodicPvExample {
 
             // 判断是否注册过定时器
             if (this.timerTsState.value() == null) {
-                ctx.timerService().registerEventTimeTimer(value.getTimestamp() + 10 * 1000L);
-                this.timerTsState.update(value.getTimestamp() + 10 * 1000L);
+                Long timerTs = value.getTimestamp() + 10 * 1000L;
+                ctx.timerService().registerEventTimeTimer(timerTs);
+                this.timerTsState.update(timerTs);
             }
         }
 
@@ -79,7 +80,7 @@ public class PeriodicPvExample {
         public void onTimer(long timestamp, KeyedProcessFunction<String, Event, String>.OnTimerContext ctx, Collector<String> out) throws Exception {
             out.collect(ctx.getCurrentKey() + "的访问次数是：" + this.urlViewCountState.value());
 
-            // 清空这个状态相当于统计10秒窗口的URL访问次数
+            // 清空状态相当于统计10秒窗口的URL访问次数
             //this.urlViewCountState.clear();
 
             // 清空状态

@@ -10,6 +10,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
+import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 
 import java.sql.Timestamp;
@@ -17,7 +18,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 /**
- * 功能说明：使用Keyed State中的MapState状态，实现模拟窗口统计功能，统计每个URL10秒钟的访问次数。
+ * 功能说明：使用Keyed State中的MapState状态，实现模拟窗口，统计10秒钟每个URL的访问次数。
  * author:liangyy
  * createtime：2023-03-03 14:07:10
  */
@@ -40,7 +41,8 @@ public class FakeWindowExample {
         stream.print("input");
 
         stream.keyBy(data -> data.getUrl())
-                .process(new FakeWindowResult(10000L)).print();
+                .process(new FakeWindowResult(Time.seconds(10)))
+                .print();
 
         env.execute();
     }
@@ -53,8 +55,8 @@ public class FakeWindowExample {
         // 定义状态，保存每个窗口URL的访问次数
         private MapState<Long, Long> mapState;
 
-        public FakeWindowResult(Long windowSize) {
-            this.windowSize = windowSize;
+        public FakeWindowResult(Time windowSize) {
+            this.windowSize = windowSize.toMilliseconds();
         }
 
         @Override
@@ -84,7 +86,8 @@ public class FakeWindowExample {
             long windowStart = windowEnd - windowSize;
 
             // 输出计算结果
-            out.collect("URL：" + ctx.getCurrentKey() + " => " + "窗口：" + new Timestamp(windowStart) + " ~ " + new Timestamp(windowEnd) + " 的访问次数是：" + mapState.get(windowStart));
+            Long pv = mapState.get(windowStart);
+            out.collect("URL：" + ctx.getCurrentKey() + " => " + "窗口：" + new Timestamp(windowStart) + " ~ " + new Timestamp(windowEnd) + " 的访问次数是：" + pv);
             // 模拟窗口销毁， 清空对应窗口的状态
             this.mapState.remove(windowStart);
         }
