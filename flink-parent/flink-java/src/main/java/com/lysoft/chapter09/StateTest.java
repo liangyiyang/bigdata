@@ -8,6 +8,7 @@ import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.state.*;
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -67,7 +68,14 @@ public class StateTest {
 
         @Override
         public void open(Configuration parameters) throws Exception {
-            this.valueState = getRuntimeContext().getState(new ValueStateDescriptor<>("valuestate", Event.class));
+            // 设置状态的失效时间
+            StateTtlConfig ttlConfig = StateTtlConfig.newBuilder(Time.hours(1))
+                    .setUpdateType(StateTtlConfig.UpdateType.OnReadAndWrite)
+                    .setStateVisibility(StateTtlConfig.StateVisibility.ReturnExpiredIfNotCleanedUp)
+                    .build();
+            ValueStateDescriptor<Event> valueStateDescriptor = new ValueStateDescriptor<>("valuestate", Event.class);
+            valueStateDescriptor.enableTimeToLive(ttlConfig);
+            this.valueState = getRuntimeContext().getState(valueStateDescriptor);
             this.listState = getRuntimeContext().getListState(new ListStateDescriptor<>("liststate", Event.class));
             this.mapState = getRuntimeContext().getMapState(new MapStateDescriptor<>("mapstate", String.class, Long.class));
             this.reducingState = getRuntimeContext().getReducingState(new ReducingStateDescriptor<>(
