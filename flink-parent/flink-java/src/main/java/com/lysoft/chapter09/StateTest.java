@@ -28,6 +28,9 @@ public class StateTest {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
+        // 启用检查点
+        env.enableCheckpointing(10000);
+
         SingleOutputStreamOperator<Event> stream = env.addSource(new ClickSource())
                 .assignTimestampsAndWatermarks(WatermarkStrategy.<Event>forBoundedOutOfOrderness(Duration.ZERO)
                         .withTimestampAssigner(new SerializableTimestampAssigner<Event>() {
